@@ -1,0 +1,61 @@
+%Ritvik Verma
+%Project 1
+%Phase 3
+%Approximating f(t) = 12 cos(40t) using truncated sums 
+%with up to 6 non-zero terms
+%making sure nothing is hardcoded
+
+clear
+clf
+format shortG
+
+tmin = 0;   %start time in ms
+tmax = 200; %end time in ms
+N = 401;    %number of points in LINSPACE
+%f = 12*cos(40*t);
+
+tms = linspace(tmin,tmax,N+1);  %the units for tms are in ms
+t = tms/1000;   %the units for t are in s
+
+A = 12;     %Amplitude of graph
+w = 40;     %angular frequency of graph in rad/s
+term = 6;   %number of non-zero sums being plotted
+%f = 12*cos(40*t);
+
+n = 0:2:(term-1)*2;
+a = A * (-1).^(n/2) .* w.^n./factorial(n);
+
+coefficientTable = table(n.', a.', 'VariableNames',...
+    {'Index n', 'Coefficient a_n'})
+%table for coefficients
+%--------------Create plotting functions-------------
+f1 = a(1)*t.^n(1);
+f2 = f1 + a(2)*t.^n(2);
+f3 = f2 + a(3)*t.^n(3);
+f4 = f3 + a(4)*t.^n(4);
+f5 = f4 + a(5)*t.^n(5);
+f6 = f5 + a(6)*t.^n(6);
+%-------------Plot and label graphs------------------
+plot([tmin,tmax], [0,0], 'k', 'LineWidth', 1)
+hold on
+p1 = plot(tms,f1,tms,f2,tms,f3,tms,f4,tms,f5,'LineWidth',2);
+p2 = plot(tms,f6,'LineWidth',4);
+hold off
+
+ax=gca;
+ax.FontSize = 16;
+ylim([-1.25*A 1.25*A])
+xlabel('time t (ms)', 'Fontsize', 20)
+ylabel('f(t)', 'FontSize', 20)
+
+str = sprintf('Approximating f(t) = %ucos(%ut)',A,w); 
+str2 = sprintf('using truncated sums with up to %u non-zero terms',term);
+title({str,...
+    str2,...
+    'ECE 202 Project 1 Phase 3'},'FontSize',24);
+legend([p1;p2], "up to n = "+n,'FontSize',20,'Location','northeastoutside')
+grid on
+set(gca, 'GridAlpha', 0.5)
+
+%the output (i.e the graph) should be similar the graph from phase 2
+%with similar axes limits and graph lines
